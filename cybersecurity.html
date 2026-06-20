@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Watch Floor — Cybersecurity & Threat Intelligence | Convergence</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  :root{ --accent: #39FF6A; --accent-deep:#1f8a45; }
+
+  /* This track page runs dark — the "watch floor" / SOC aesthetic */
+  body.cyber-body{ background: var(--ink); color: var(--paper); }
+  .cyber-body .topnav{ background: var(--ink); border-bottom-color: rgba(247,245,240,0.12); }
+  .cyber-body .brand-mark{ background: var(--accent); color:#04190b; }
+  .cyber-body .navlinks a{ color: var(--muted-on-ink); }
+  .cyber-body .navlinks a:hover, .cyber-body .navlinks a.is-active{ color: var(--accent); border-color: var(--accent); }
+  .cyber-body .footer-note{ color: var(--muted-on-ink); }
+  .cyber-body footer.site-footer{ background:#070a0d; border-top-color: rgba(247,245,240,0.12); }
+  .cyber-body .footer-back{ color: var(--accent); border-color: var(--accent); }
+
+  .track-hero{ padding: 56px 0 0; }
+  .breadcrumb{ font-family: var(--mono); font-size:12px; color: var(--muted-on-ink); letter-spacing:.04em; display:flex; gap:8px; align-items:center; margin-bottom:30px; }
+  .breadcrumb a{ text-decoration:none; color: var(--muted-on-ink); }
+  .breadcrumb a:hover{ color: var(--accent); }
+  .breadcrumb .accent-chip{ background: var(--accent); color:#04190b; font-weight:700; padding:2px 8px; border-radius:2px; font-size:11px; }
+
+  .th-grid{ display:grid; grid-template-columns: 1.15fr 0.85fr; gap:48px; align-items:stretch; padding-bottom:60px; border-bottom:1px solid rgba(247,245,240,0.12); }
+  @media (max-width:900px){ .th-grid{ grid-template-columns:1fr; } }
+
+  .track-tag{ font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .track-hero h1{ color: var(--paper); font-size: clamp(38px,5.6vw,64px); line-height:1.0; margin-top:14px; letter-spacing:-0.02em; }
+  .theme-statement{ margin-top: 22px; font-size: 19px; line-height:1.6; max-width:48ch; color: #c8cdd6; font-family: var(--serif); font-style:italic; font-weight:400; }
+  .relevance-box{ margin-top:28px; padding:20px 22px; background: #11151b; border-left:3px solid var(--accent); font-size:14.5px; color:#b6bcc6; line-height:1.65; max-width: 56ch; }
+  .relevance-box b{ display:block; font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; font-weight:700; }
+
+  /* terminal log card — signature visual */
+  .term-card{
+    background: #04060a;
+    border: 1px solid rgba(57,255,106,0.3);
+    border-radius: 4px;
+    min-height: 320px;
+    padding: 20px 22px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.85;
+    box-shadow: 0 0 0 1px rgba(57,255,106,0.05), 0 20px 50px rgba(0,0,0,0.4);
+  }
+  .term-head{ display:flex; gap:8px; margin-bottom:16px; }
+  .term-dot{ width:10px; height:10px; border-radius:50%; background:#333; }
+  .term-line{ color: #7d8a93; }
+  .term-line .ok{ color: var(--accent); }
+  .term-line .warn{ color: #ffb454; }
+  .term-line .alert{ color: #ff5c5c; }
+  .term-prompt{ color: var(--accent); }
+  .term-cursor{ display:inline-block; width:7px; height:13px; background:var(--accent); animation: blink 1s steps(1) infinite; vertical-align:middle; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .sess-list{ border-top:2px solid var(--accent); margin-top:48px; }
+  .sess-item{ display:grid; grid-template-columns: 70px 1fr; gap:24px; padding: 26px 4px; border-bottom:1px solid rgba(247,245,240,0.1); }
+  .sess-item .idx{ color: var(--accent); font-weight:700; }
+  .sess-item h4{ color: var(--paper); font-size:18px; font-weight:600; }
+  .sess-item p{ margin-top:6px; color: #99a0aa; font-size:14.5px; line-height:1.6; max-width:62ch; }
+
+  .workshop{ background: #0c1a12; border: 1px solid var(--accent-deep); border-radius: 4px; padding: 36px 34px; margin-top: 16px; }
+  .workshop .w-label{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .workshop h3{ color: var(--paper); margin-top:12px; font-size: clamp(22px,3vw,28px); }
+  .workshop p{ margin-top:14px; color:#b6bcc6; line-height:1.65; font-size:15px; max-width:72ch; }
+  .workshop .w-steps{ margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+  .w-step{ display:flex; gap:14px; align-items:baseline; font-size:14px; color:#b6bcc6; }
+  .w-step .ws-num{ font-family:var(--mono); font-weight:700; color:var(--accent); min-width:22px; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  @media (max-width:820px){ .two-col{ grid-template-columns:1fr; } }
+  .pill-group{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .pill{ font-family:var(--mono); font-size:13px; padding:9px 16px; border:1.5px solid var(--accent); border-radius: 20px; background:transparent; color: var(--accent); }
+  .career-list{ margin-top:22px; display:flex; flex-direction:column; }
+  .career-row{ display:flex; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid rgba(247,245,240,0.1); font-size:15px; color:#dfe3e8; }
+  .career-row:first-child{ border-top:1px solid rgba(247,245,240,0.1); }
+  .career-row .cr-level{ font-family:var(--mono); font-size:11px; color:var(--muted-on-ink); text-transform:uppercase; letter-spacing:.05em; white-space:nowrap; padding-top:2px;}
+
+  .proj-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:22px; margin-top:24px; }
+  @media (max-width:900px){ .proj-grid{ grid-template-columns:1fr; } }
+  .proj-card{ border:1px solid rgba(247,245,240,0.14); border-radius:4px; padding:24px 22px; background:#0c0f14; transition: border-color .15s ease, transform .15s ease; }
+  .proj-card:hover{ border-color: var(--accent); transform: translateY(-3px); }
+  .proj-card .pj-tag{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .proj-card h4{ margin-top:10px; font-size:16px; line-height:1.4; color: var(--paper); }
+  .proj-card p{ margin-top:8px; font-size:13.5px; color:#99a0aa; line-height:1.6; }
+
+  .eyebrow{ color: var(--muted-on-ink); }
+  .section-head h2{ color: var(--paper); }
+  .section-head .lede{ color:#99a0aa; }
+
+  .track-cta{ margin-top:90px; padding: 56px 0; border-top:1px solid rgba(247,245,240,0.12); border-bottom:1px solid rgba(247,245,240,0.12); display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; }
+  .track-cta h3{ color: var(--paper); font-size:24px; max-width:24ch; }
+  .btn{ border-color: var(--accent); color: var(--accent); }
+  .btn:hover{ background: var(--accent); color:#04190b; }
+  .btn-solid{ background: var(--accent); color:#04190b; border-color: var(--accent); }
+  .btn-solid:hover{ background:#2ee05f; }
+</style>
+</head>
+<body class="cyber-body">
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">CV</span>
+      <span class="brand-name" style="color:var(--paper)">Convergence</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Overview</a>
+      <a href="startup.html">Startup</a>
+      <a href="history.html">Tech History</a>
+      <a href="research.html">Research</a>
+      <a href="cybersecurity.html" class="is-active">Cybersecurity</a>
+      <a href="business.html">Business Intel</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="track-hero">
+    <div class="breadcrumb">
+      <a href="index.html">Convergence</a> / <span class="accent-chip">TRACK 04</span> Cybersecurity &amp; Threat Intelligence
+    </div>
+
+    <div class="th-grid">
+      <div>
+        <span class="track-tag">Cybersecurity &amp; Threat Intelligence</span>
+        <h1>The Watch<br>Floor</h1>
+        <p class="theme-statement">"Think like the attacker for an afternoon so you can defend like an analyst for a career."</p>
+
+        <div class="relevance-box">
+          <b>Why this matters right now</b>
+          Ransomware, insider threats, and infrastructure attacks have moved from rare headlines to routine news. Every organization — banks, hospitals, government ministries, small startups — now needs people who can reason clearly about vulnerabilities, classify attacks correctly, and respond fast. This track builds that reasoning from the ground up, using real, documented incidents.
+        </div>
+      </div>
+
+      <div class="term-card">
+        <div class="term-head">
+          <span class="term-dot" style="background:#ff5f57"></span>
+          <span class="term-dot" style="background:#febc2e"></span>
+          <span class="term-dot" style="background:#28c840"></span>
+        </div>
+        <div class="term-line"><span class="term-prompt">analyst@watchfloor</span>:~$ tail -f incident.log</div>
+        <div class="term-line">[09:14:02] connection attempt — flagged <span class="warn">unusual origin</span></div>
+        <div class="term-line">[09:14:09] auth failure x47 — <span class="alert">brute force pattern</span></div>
+        <div class="term-line">[09:14:11] triggering: <span class="ok">CIA Triad assessment</span></div>
+        <div class="term-line">[09:14:13] Confidentiality: at risk</div>
+        <div class="term-line">[09:14:13] Integrity: monitoring</div>
+        <div class="term-line">[09:14:14] Availability: <span class="ok">stable</span></div>
+        <div class="term-line"><span class="term-prompt">analyst@watchfloor</span>:~$ <span class="term-cursor"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Session lineup</span>
+      <h2>Beginner-friendly sessions</h2>
+      <p class="lede">No security background assumed. Sessions build a shared analytical vocabulary using real, documented cases.</p>
+    </div>
+
+    <div class="sess-list">
+      <div class="sess-item">
+        <span class="idx">01</span>
+        <div>
+          <h4>The CIA Triad: Confidentiality, Integrity, Availability</h4>
+          <p>The foundational framework analysts use to classify what any attack actually damages — and why all three matter differently.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">02</span>
+        <div>
+          <h4>Passive vs. Active Attacks: Spotting the Difference</h4>
+          <p>How analysts distinguish silent surveillance-style attacks from active, disruptive ones — and why the distinction changes the response.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">03</span>
+        <div>
+          <h4>Anatomy of an Insider Threat</h4>
+          <p>Using a real bank insider-threat case, this session walks through how trusted access becomes the easiest attack vector.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">04</span>
+        <div>
+          <h4>DDoS, Explained With a Real Government Attack</h4>
+          <p>A walkthrough of a real-world distributed denial-of-service incident — what made it effective, and what stopped it.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">05</span>
+        <div>
+          <h4>Social Engineering &amp; Brute Force: The Human Vulnerability</h4>
+          <p>Why the weakest point in most systems is a person, not a server — and how attackers exploit trust before they exploit code.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="workshop">
+      <span class="w-label">Hands-on workshop</span>
+      <h3>Tabletop Incident Response: 30 Minutes to Contain a Breach</h3>
+      <p>Teams are handed a realistic, evolving incident briefing — vague at first, like a real alert. Every five minutes, a new piece of evidence arrives. Using the three-question framework from this track (vulnerable points and countermeasures, passive vs. active classification, and CIA Triad impact), teams must classify the attack, identify the entry point, and propose a containment plan before time runs out.</p>
+      <div class="w-steps">
+        <div class="w-step"><span class="ws-num">01</span> Receive the initial incident alert (intentionally vague)</div>
+        <div class="w-step"><span class="ws-num">02</span> Classify it: passive or active, and which CIA pillar is at risk</div>
+        <div class="w-step"><span class="ws-num">03</span> Respond to new evidence as it's revealed every 5 minutes</div>
+        <div class="w-step"><span class="ws-num">04</span> Present your containment plan and reasoning to the room</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="two-col">
+      <div>
+        <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Skills gained</span>
+        <h2 style="font-size:26px; margin-top:14px; color:var(--paper);">What you'll walk away with</h2>
+        <div class="pill-group">
+          <span class="pill">Threat classification</span>
+          <span class="pill">CIA Triad analysis</span>
+          <span class="pill">Vulnerability mapping</span>
+          <span class="pill">Incident response thinking</span>
+          <span class="pill">Risk communication</span>
+          <span class="pill">Case-based reasoning</span>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Where this leads</span>
+        <h2 style="font-size:26px; margin-top:14px; color:var(--paper);">Career paths</h2>
+        <div class="career-list">
+          <div class="career-row"><span>SOC Analyst (Security Operations Center)</span><span class="cr-level">Entry</span></div>
+          <div class="career-row"><span>Threat Intelligence Analyst</span><span class="cr-level">Specialist</span></div>
+          <div class="career-row"><span>Incident Response Specialist</span><span class="cr-level">Specialist</span></div>
+          <div class="career-row"><span>Penetration Tester / Ethical Hacker</span><span class="cr-level">Offensive</span></div>
+          <div class="career-row"><span>Governance, Risk &amp; Compliance (GRC) Analyst</span><span class="cr-level">Policy</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Take it further</span>
+    <h2 style="font-size:26px; margin-top:14px; color:var(--paper);">Project ideas to pursue afterward</h2>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <span class="pj-tag">Case study report</span>
+        <h4>Write a three-question framework analysis of a public breach</h4>
+        <p>Pick a documented attack and analyze it with the same structure used in this track: vulnerabilities, attack type, and CIA Triad impact.</p>
+      </div>
+      <div class="proj-card">
+        <span class="pj-tag">Comparative analysis</span>
+        <h4>Compare an insider-threat case with a DDoS case side by side</h4>
+        <p>Build a table contrasting attacker motivation, entry point, detection method, and response across two very different incident types.</p>
+      </div>
+      <div class="proj-card">
+        <span class="pj-tag">Defense proposal</span>
+        <h4>Design a basic incident-response checklist for a small organization</h4>
+        <p>Draft a practical, beginner-level response plan a small business or campus club could realistically follow during an active incident.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="track-cta">
+    <h3>Next on the program: Business &amp; Market Analysis</h3>
+    <a href="business.html" class="btn btn-solid">Continue to Track 05 →</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-note">CONVERGENCE — Track 04 of 05 · Cybersecurity &amp; Threat Intelligence</div>
+    <a href="index.html" class="footer-back">← Back to all tracks</a>
+  </div>
+</footer>
+
+</body>
+</html>

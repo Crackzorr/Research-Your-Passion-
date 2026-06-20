@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Open Notebook — Research & Academic Exploration | Convergence</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  :root{ --accent: #3D8B7D; --accent-dim: #dcefe9; }
+
+  .track-hero{ padding: 56px 0 0; }
+  .breadcrumb{ font-family: var(--mono); font-size:12px; color:var(--muted); letter-spacing:.04em; display:flex; gap:8px; align-items:center; margin-bottom:30px; }
+  .breadcrumb a{ text-decoration:none; color:var(--muted); }
+  .breadcrumb a:hover{ color:var(--ink); }
+  .breadcrumb .accent-chip{ background: var(--accent); color:#fff; font-weight:700; padding:2px 8px; border-radius:2px; font-size:11px; }
+
+  .th-grid{ display:grid; grid-template-columns: 1.15fr 0.85fr; gap:48px; align-items:stretch; padding-bottom:60px; border-bottom:1px solid var(--line); }
+  @media (max-width:900px){ .th-grid{ grid-template-columns:1fr; } }
+
+  .track-tag{ font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .track-hero h1{ font-size: clamp(38px,5.6vw,64px); line-height:1.0; margin-top:14px; letter-spacing:-0.02em; }
+  .theme-statement{ margin-top: 22px; font-size: 19px; line-height:1.6; max-width:48ch; color:#3a362e; font-family: var(--serif); font-style:italic; font-weight:400; }
+  .relevance-box{ margin-top:28px; padding:20px 22px; background: var(--paper-dim); border-left:3px solid var(--accent); font-size:14.5px; color:#4a4538; line-height:1.65; max-width: 56ch; }
+  .relevance-box b{ display:block; font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; font-weight:700; }
+
+  /* lab notebook page — signature visual */
+  .notebook-card{
+    background: #fdfdfb;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    min-height: 320px;
+    position:relative;
+    padding: 26px 26px 26px 46px;
+    background-image: repeating-linear-gradient(transparent, transparent 27px, #e5efec 28px);
+    background-position: 0 8px;
+  }
+  .notebook-card::before{
+    content:"";
+    position:absolute; left:26px; top:0; bottom:0; width:1px; background: #e3a3a3;
+  }
+  .nb-label{ font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:14px; display:block; }
+  .nb-line{ font-size:13.5px; color:#33392f; line-height:28px; }
+  .nb-line b{ color: var(--accent); font-weight:700; }
+  .nb-q{ font-family: var(--serif); font-style:italic; font-size:16px; color:#1f241c; margin-top: 6px; line-height:1.5; }
+
+  .sess-list{ border-top:2px solid var(--ink); margin-top:48px; }
+  .sess-item{ display:grid; grid-template-columns: 70px 1fr; gap:24px; padding: 26px 4px; border-bottom:1px solid var(--line); }
+  .sess-item .idx{ color: var(--accent); font-weight:700; }
+  .sess-item h4{ font-size:18px; font-weight:600; }
+  .sess-item p{ margin-top:6px; color:var(--muted); font-size:14.5px; line-height:1.6; max-width:62ch; }
+
+  .workshop{ background: var(--accent-dim); border: 1px solid var(--accent); border-radius: 4px; padding: 36px 34px; margin-top: 16px; }
+  .workshop .w-label{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#225349; font-weight:700; }
+  .workshop h3{ margin-top:12px; font-size: clamp(22px,3vw,28px); }
+  .workshop p{ margin-top:14px; color:#1f3d36; line-height:1.65; font-size:15px; max-width:72ch; }
+  .workshop .w-steps{ margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+  .w-step{ display:flex; gap:14px; align-items:baseline; font-size:14px; color:#1f3d36; }
+  .w-step .ws-num{ font-family:var(--mono); font-weight:700; color:#225349; min-width:22px; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  @media (max-width:820px){ .two-col{ grid-template-columns:1fr; } }
+  .pill-group{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .pill{ font-family:var(--mono); font-size:13px; padding:9px 16px; border:1.5px solid var(--ink); border-radius: 20px; background:transparent; }
+  .career-list{ margin-top:22px; display:flex; flex-direction:column; }
+  .career-row{ display:flex; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); font-size:15px; }
+  .career-row:first-child{ border-top:1px solid var(--line); }
+  .career-row .cr-level{ font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; white-space:nowrap; padding-top:2px;}
+
+  .proj-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:22px; margin-top:24px; }
+  @media (max-width:900px){ .proj-grid{ grid-template-columns:1fr; } }
+  .proj-card{ border:1px solid var(--line); border-radius:4px; padding:24px 22px; background:var(--paper); transition: border-color .15s ease, transform .15s ease; }
+  .proj-card:hover{ border-color: var(--accent); transform: translateY(-3px); }
+  .proj-card .pj-tag{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .proj-card h4{ margin-top:10px; font-size:16px; line-height:1.4; }
+  .proj-card p{ margin-top:8px; font-size:13.5px; color:var(--muted); line-height:1.6; }
+
+  .track-cta{ margin-top:90px; padding: 56px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; }
+  .track-cta h3{ font-size:24px; max-width:24ch; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">CV</span>
+      <span class="brand-name">Convergence</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Overview</a>
+      <a href="startup.html">Startup</a>
+      <a href="history.html">Tech History</a>
+      <a href="research.html" class="is-active">Research</a>
+      <a href="cybersecurity.html">Cybersecurity</a>
+      <a href="business.html">Business Intel</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="track-hero">
+    <div class="breadcrumb">
+      <a href="index.html">Convergence</a> / <span class="accent-chip">TRACK 03</span> Research &amp; Academic Exploration
+    </div>
+
+    <div class="th-grid">
+      <div>
+        <span class="track-tag">Research &amp; Academic Exploration</span>
+        <h1>The Open<br>Notebook</h1>
+        <p class="theme-statement">"Curiosity is a skill — structured questioning turns it into a research career."</p>
+
+        <div class="relevance-box">
+          <b>Why this matters right now</b>
+          The ability to ask a sharp question, find credible evidence, and reason carefully about uncertain information matters more than ever — in a world flooded with information of wildly uneven quality, the students who can tell strong evidence from weak evidence have a real advantage, in academia and far beyond it.
+        </div>
+      </div>
+
+      <div class="notebook-card">
+        <span class="nb-label">Field Notebook — Entry 04</span>
+        <div class="nb-line"><b>Q:</b> <span class="nb-q">What happens to a question once it survives peer review?</span></div>
+        <div class="nb-line">&nbsp;</div>
+        <div class="nb-line"><b>Obs:</b> Most ideas fail quietly, long before publication.</div>
+        <div class="nb-line"><b>Obs:</b> A good lit review finds the gap, not just the topic.</div>
+        <div class="nb-line"><b>Next:</b> Narrow scope. Re-test the question.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Session lineup</span>
+      <h2>Beginner-friendly sessions</h2>
+      <p class="lede">For anyone who's ever had a "what if" question but didn't know what to do with it next.</p>
+    </div>
+
+    <div class="sess-list">
+      <div class="sess-item">
+        <span class="idx">01</span>
+        <div>
+          <h4>From Curiosity to Question: Finding a Researchable Idea</h4>
+          <p>How professional researchers narrow a broad interest into a specific, answerable question — and why the narrowing is the hard part.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">02</span>
+        <div>
+          <h4>Reading a Research Paper Without Drowning</h4>
+          <p>A practical method for getting the core finding out of a dense academic paper in under 15 minutes.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">03</span>
+        <div>
+          <h4>Literature Reviews: Finding the Gap, Not Just the Topic</h4>
+          <p>How to scan existing work to find what's genuinely unanswered — the real starting line for original research.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">04</span>
+        <div>
+          <h4>Choosing a Method: Qualitative, Quantitative, or Both</h4>
+          <p>A plain-language tour of common research methods, and how to pick one that actually fits your question.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">05</span>
+        <div>
+          <h4>What Peer Review Actually Checks For</h4>
+          <p>Demystifying the review process — what reviewers look for, and how to think like one when reading any claim.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="workshop">
+      <span class="w-label">Hands-on workshop</span>
+      <h3>From Headline to Hypothesis</h3>
+      <p>Participants receive a real (simplified) news headline about a scientific finding. In small groups, they work backward: what question must the original researchers have asked, what method could answer it, and what evidence would actually prove or disprove the claim? Groups present their reconstructed research design, and a brief group discussion compares it with what the real study actually did.</p>
+      <div class="w-steps">
+        <div class="w-step"><span class="ws-num">01</span> Receive a real science headline (no other details)</div>
+        <div class="w-step"><span class="ws-num">02</span> Reconstruct the likely research question (10 min)</div>
+        <div class="w-step"><span class="ws-num">03</span> Propose a method and the evidence needed to test it</div>
+        <div class="w-step"><span class="ws-num">04</span> Present, then compare with the actual published study</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="two-col">
+      <div>
+        <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Skills gained</span>
+        <h2 style="font-size:26px; margin-top:14px;">What you'll walk away with</h2>
+        <div class="pill-group">
+          <span class="pill">Question framing</span>
+          <span class="pill">Literature review</span>
+          <span class="pill">Source evaluation</span>
+          <span class="pill">Methodology selection</span>
+          <span class="pill">Academic writing</span>
+          <span class="pill">Evidence-based reasoning</span>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Where this leads</span>
+        <h2 style="font-size:26px; margin-top:14px;">Career paths</h2>
+        <div class="career-list">
+          <div class="career-row"><span>Graduate Researcher / PhD Track</span><span class="cr-level">Academia</span></div>
+          <div class="career-row"><span>Research Assistant / Lab Technician</span><span class="cr-level">Early-career</span></div>
+          <div class="career-row"><span>Policy &amp; Think-Tank Analyst</span><span class="cr-level">Policy</span></div>
+          <div class="career-row"><span>Data &amp; Insights Researcher</span><span class="cr-level">Industry</span></div>
+          <div class="career-row"><span>Science Communicator / Writer</span><span class="cr-level">Media</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Take it further</span>
+    <h2 style="font-size:26px; margin-top:14px;">Project ideas to pursue afterward</h2>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <span class="pj-tag">Mini lit review</span>
+        <h4>Write a 2-page literature review on a question from your own major</h4>
+        <p>Find five credible sources, summarize the current state of knowledge, and identify one clear, unanswered gap.</p>
+      </div>
+      <div class="proj-card">
+        <span class="pj-tag">Replication exercise</span>
+        <h4>Pick a published study and design a smaller replication of it</h4>
+        <p>Sketch a scaled-down version of a real study's method that you could feasibly run on your own campus.</p>
+      </div>
+      <div class="proj-card">
+        <span class="pj-tag">Faculty interview</span>
+        <h4>Interview a professor about how their research question evolved</h4>
+        <p>Document how a real researcher's question changed from their first idea to their published work, and why.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="track-cta">
+    <h3>Next on the program: Cybersecurity &amp; Threat Intelligence</h3>
+    <a href="cybersecurity.html" class="btn btn-solid">Continue to Track 04 →</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-note">CONVERGENCE — Track 03 of 05 · Research &amp; Academic Exploration</div>
+    <a href="index.html" class="footer-back">← Back to all tracks</a>
+  </div>
+</footer>
+
+</body>
+</html>

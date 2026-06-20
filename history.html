@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Long Signal — Technology History & Future Trends | Convergence</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  :root{ --accent: #8B7355; --accent-dim: #efe8da; }
+
+  .track-hero{ padding: 56px 0 0; }
+  .breadcrumb{
+    font-family: var(--mono); font-size:12px; color:var(--muted); letter-spacing:.04em;
+    display:flex; gap:8px; align-items:center; margin-bottom:30px;
+  }
+  .breadcrumb a{ text-decoration:none; color:var(--muted); }
+  .breadcrumb a:hover{ color:var(--ink); }
+  .breadcrumb .accent-chip{ background: var(--accent); color:#fff; font-weight:700; padding:2px 8px; border-radius:2px; font-size:11px; }
+
+  .th-grid{
+    display:grid; grid-template-columns: 1.15fr 0.85fr; gap:48px; align-items:stretch;
+    padding-bottom:60px; border-bottom:1px solid var(--line);
+  }
+  @media (max-width:900px){ .th-grid{ grid-template-columns:1fr; } }
+
+  .track-tag{ font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .track-hero h1{ font-size: clamp(38px,5.6vw,64px); line-height:1.0; margin-top:14px; letter-spacing:-0.02em; }
+  .theme-statement{
+    margin-top: 22px; font-size: 19px; line-height:1.6; max-width:48ch; color:#3a362e;
+    font-family: var(--serif); font-style:italic; font-weight:400;
+  }
+  .relevance-box{
+    margin-top:28px; padding:20px 22px; background: var(--paper-dim); border-left:3px solid var(--accent);
+    font-size:14.5px; color:#4a4538; line-height:1.65; max-width: 56ch;
+  }
+  .relevance-box b{ display:block; font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; font-weight:700; }
+
+  /* archival ledger card — signature visual */
+  .ledger-card{
+    background: #fdfbf6;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 0;
+    min-height: 320px;
+    display:flex; flex-direction:column;
+    box-shadow: 6px 6px 0 var(--accent-dim);
+  }
+  .ledger-head{
+    padding: 18px 22px; border-bottom: 1px dashed #c9c0ab;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .ledger-head span{ font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .ledger-rows{ padding: 10px 22px; flex:1; }
+  .ledger-row{ display:flex; gap:14px; padding: 13px 0; border-bottom: 1px dashed #ddd5c2; }
+  .ledger-row:last-child{ border-bottom:none; }
+  .ledger-row .lr-year{ font-family:var(--mono); font-size:13px; font-weight:700; color:var(--accent); min-width:50px; }
+  .ledger-row .lr-event{ font-size:13.5px; color:#3a362e; line-height:1.4; }
+  .ledger-foot{ padding:14px 22px; font-family:var(--mono); font-size:10.5px; color:var(--muted); border-top:1px dashed #c9c0ab; }
+
+  .sess-list{ border-top:2px solid var(--ink); margin-top:48px; }
+  .sess-item{ display:grid; grid-template-columns: 70px 1fr; gap:24px; padding: 26px 4px; border-bottom:1px solid var(--line); }
+  .sess-item .idx{ color: var(--accent); font-weight:700; }
+  .sess-item h4{ font-size:18px; font-weight:600; }
+  .sess-item p{ margin-top:6px; color:var(--muted); font-size:14.5px; line-height:1.6; max-width:62ch; }
+
+  .workshop{ background: var(--accent-dim); border: 1px solid var(--accent); border-radius: 4px; padding: 36px 34px; margin-top: 16px; }
+  .workshop .w-label{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#5c4a30; font-weight:700; }
+  .workshop h3{ margin-top:12px; font-size: clamp(22px,3vw,28px); }
+  .workshop p{ margin-top:14px; color:#4a3f2c; line-height:1.65; font-size:15px; max-width:72ch; }
+  .workshop .w-steps{ margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+  .w-step{ display:flex; gap:14px; align-items:baseline; font-size:14px; color:#4a3f2c; }
+  .w-step .ws-num{ font-family:var(--mono); font-weight:700; color:#5c4a30; min-width:22px; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  @media (max-width:820px){ .two-col{ grid-template-columns:1fr; } }
+  .pill-group{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .pill{ font-family:var(--mono); font-size:13px; padding:9px 16px; border:1.5px solid var(--ink); border-radius: 20px; background:transparent; }
+  .career-list{ margin-top:22px; display:flex; flex-direction:column; }
+  .career-row{ display:flex; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); font-size:15px; }
+  .career-row:first-child{ border-top:1px solid var(--line); }
+  .career-row .cr-level{ font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; white-space:nowrap; padding-top:2px;}
+
+  .proj-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:22px; margin-top:24px; }
+  @media (max-width:900px){ .proj-grid{ grid-template-columns:1fr; } }
+  .proj-card{ border:1px solid var(--line); border-radius:4px; padding:24px 22px; background:var(--paper); transition: border-color .15s ease, transform .15s ease; }
+  .proj-card:hover{ border-color: var(--accent); transform: translateY(-3px); }
+  .proj-card .pj-tag{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .proj-card h4{ margin-top:10px; font-size:16px; line-height:1.4; }
+  .proj-card p{ margin-top:8px; font-size:13.5px; color:var(--muted); line-height:1.6; }
+
+  .track-cta{
+    margin-top:90px; padding: 56px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+  }
+  .track-cta h3{ font-size:24px; max-width:24ch; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">CV</span>
+      <span class="brand-name">Convergence</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Overview</a>
+      <a href="startup.html">Startup</a>
+      <a href="history.html" class="is-active">Tech History</a>
+      <a href="research.html">Research</a>
+      <a href="cybersecurity.html">Cybersecurity</a>
+      <a href="business.html">Business Intel</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="track-hero">
+    <div class="breadcrumb">
+      <a href="index.html">Convergence</a> / <span class="accent-chip">TRACK 02</span> Technology History &amp; Future Trends
+    </div>
+
+    <div class="th-grid">
+      <div>
+        <span class="track-tag">Technology History &amp; Future Trends</span>
+        <h1>The Long<br>Signal</h1>
+        <p class="theme-statement">"Every 'sudden' breakthrough has a forty-year backstory — learn to read it."</p>
+
+        <div class="relevance-box">
+          <b>Why this matters right now</b>
+          AI, quantum computing, and biotech all feel like overnight arrivals — but each is the visible tip of a decades-long research thread. Understanding how technologies actually move from lab to lab to mainstream is the single best tool for telling real breakthroughs apart from hype, and for predicting what's coming next instead of just reacting to it.
+        </div>
+      </div>
+
+      <div class="ledger-card">
+        <div class="ledger-head"><span>Field Ledger — Selected Entries</span></div>
+        <div class="ledger-rows">
+          <div class="ledger-row"><span class="lr-year">1936</span><span class="lr-event">Turing formalizes computation, decades before a usable computer exists.</span></div>
+          <div class="ledger-row"><span class="lr-year">1969</span><span class="lr-event">ARPANET sends its first message — the internet's quiet, unglamorous birth.</span></div>
+          <div class="ledger-row"><span class="lr-year">1991</span><span class="lr-event">The web is opened to the public after years inside research labs.</span></div>
+          <div class="ledger-row"><span class="lr-year">2012</span><span class="lr-event">A neural net wins an image contest — the deep learning era quietly begins.</span></div>
+        </div>
+        <div class="ledger-foot">PATTERN: the "sudden" moment is always the last step of a much longer chain.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Session lineup</span>
+      <h2>Beginner-friendly sessions</h2>
+      <p class="lede">No history or CS background needed — these sessions teach a way of thinking about technology, not a list of dates to memorize.</p>
+    </div>
+
+    <div class="sess-list">
+      <div class="sess-item">
+        <span class="idx">01</span>
+        <div>
+          <h4>Why Technologies Take 30 Years to "Suddenly" Arrive</h4>
+          <p>A framework for spotting the slow-build phase of a technology — research, prototype, niche, mainstream — and where today's tools actually sit.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">02</span>
+        <div>
+          <h4>The Internet Before the Browser</h4>
+          <p>How email, file-sharing, and bulletin boards quietly built the internet's culture before most people had ever seen a web page.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">03</span>
+        <div>
+          <h4>Hype Cycles: How to Spot One While You're Inside It</h4>
+          <p>A practical model for separating genuine inflection points from temporary hype — using past examples as a comparison tool.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">04</span>
+        <div>
+          <h4>Forgotten Forks: Technologies That Almost Won</h4>
+          <p>Competing standards and products that lost the race — and what their failure teaches about adoption, not just invention.</p>
+        </div>
+      </div>
+      <div class="sess-item">
+        <span class="idx">05</span>
+        <div>
+          <h4>Forecasting Without a Crystal Ball</h4>
+          <p>Simple, repeatable methods for making grounded predictions about where a technology trend goes next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="workshop">
+      <span class="w-label">Hands-on workshop</span>
+      <h3>Tech Archaeology: Build a Timeline From Scratch</h3>
+      <p>Teams receive a technology most people think "appeared overnight" (e.g. smartphones, GPS, voice assistants) and a stack of unlabeled milestone cards spanning decades. Working only from clues on each card, teams reconstruct the correct chronological order, then identify the actual inflection point — and defend their choice to the room.</p>
+      <div class="w-steps">
+        <div class="w-step"><span class="ws-num">01</span> Receive your technology and a shuffled deck of milestone cards</div>
+        <div class="w-step"><span class="ws-num">02</span> Reconstruct the true timeline as a team (15 min)</div>
+        <div class="w-step"><span class="ws-num">03</span> Mark the single moment you believe was the real inflection point</div>
+        <div class="w-step"><span class="ws-num">04</span> Present your timeline and defend your inflection-point pick</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="two-col">
+      <div>
+        <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Skills gained</span>
+        <h2 style="font-size:26px; margin-top:14px;">What you'll walk away with</h2>
+        <div class="pill-group">
+          <span class="pill">Pattern recognition</span>
+          <span class="pill">Trend forecasting</span>
+          <span class="pill">Source research</span>
+          <span class="pill">Critical media reading</span>
+          <span class="pill">Timeline construction</span>
+          <span class="pill">Hype vs. signal analysis</span>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Where this leads</span>
+        <h2 style="font-size:26px; margin-top:14px;">Career paths</h2>
+        <div class="career-list">
+          <div class="career-row"><span>Technology Journalist / Analyst</span><span class="cr-level">Media</span></div>
+          <div class="career-row"><span>Innovation &amp; Foresight Consultant</span><span class="cr-level">Consulting</span></div>
+          <div class="career-row"><span>Science &amp; Technology Policy Researcher</span><span class="cr-level">Policy</span></div>
+          <div class="career-row"><span>Technology Historian / Archivist</span><span class="cr-level">Academia</span></div>
+          <div class="career-row"><span>R&amp;D Strategy Analyst</span><span class="cr-level">Corporate</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <span class="eyebrow"><span class="dot" style="color:var(--accent)"></span>Take it further</span>
+    <h2 style="font-size:26px; margin-top:14px;">Project ideas to pursue afterward</h2>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <span class="pj-tag">Case study</span>
+        <h4>Trace the 30-year history of a technology you use daily</h4>
+        <p>Pick one app or device and document its full lineage from earliest research prototype to today's mainstream version.</p>
+      </div>
+      <div class="proj-card">
+        <span class="pj-tag">Comparative analysis</span>
+        <h4>Compare a "winning" and "losing" standard from the same era</h4>
+        <p>Study two competing technologies that solved the same problem and identify what adoption factor actually decided the winner.</p>
+      </div>
+      <div class="proj-card">
+        <span class="pj-tag">Forecast paper</span>
+        <h4>Write a 5-year forecast for an emerging technology, with evidence</h4>
+        <p>Apply the hype-cycle framework from this track to a current trend and produce a grounded, source-backed prediction.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="track-cta">
+    <h3>Next on the program: Research &amp; Academic Exploration</h3>
+    <a href="research.html" class="btn btn-solid">Continue to Track 03 →</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-note">CONVERGENCE — Track 02 of 05 · Technology History &amp; Future Trends</div>
+    <a href="index.html" class="footer-back">← Back to all tracks</a>
+  </div>
+</footer>
+
+</body>
+</html>
